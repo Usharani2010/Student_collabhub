@@ -7,3 +7,4 @@ jwt
 python-dotenv
 cloudinary
 pymongo
+python-multipart
