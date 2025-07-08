@@ -103,3 +103,56 @@ async def get_comments_by_post(post_id : str ):
         "message": "Comments retrieved successfully",
         "data": comments
     }
+
+@router.put("/update/{post_id}", response_model=dict)
+async def update_post(
+    post_id: str,
+    type: str = Form(None),
+    title: str = Form(None),
+    content: str = Form(None),
+    tags: str = Form(None),
+    file: UploadFile = File(None),
+    Authorization: str = Header(None)
+):
+    user_data = decode_jwt_token(Authorization)
+    user_email = user_data.get("email")
+
+    existing_post = await db.posts.find_one({"post_id": post_id})
+    if not existing_post:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    if existing_post["created_by"] != user_email:
+        raise HTTPException(status_code=403, detail="Not authorized to update this post")
+
+    update_fields = {}
+
+    if type is not None:
+        update_fields["type"] = type
+    if title is not None:
+        update_fields["title"] = title
+    if content is not None:
+        update_fields["content"] = content
+    if tags is not None:
+        try:
+            update_fields["tags"] = json.loads(tags)
+        except json.JSONDecodeError:
+            raise HTTPException(status_code=400, detail="Invalid tags format. Please provide a valid JSON array.")
+    if file is not None:
+        file_url = upload_file_to_cloudinary(file.file)
+        if not file_url:
+            raise HTTPException(status_code=500, detail="File upload to Cloudinary failed")
+        update_fields["file_url"] = file_url
+
+    update_fields["updated_at"] = datetime.utcnow()
+
+    result = await db.posts.update_one({"post_id": post_id}, {"$set": update_fields})
+
+    if result.modified_count == 1:
+        updated_post = await db.posts.find_one({"post_id": post_id}, {"_id": 0})
+        return {
+            "status": "success",
+            "message": "Post updated successfully",
+            "data": updated_post
+        }
+    else:
+        raise HTTPException(status_code=500, detail="Failed to update post or no changes made")
