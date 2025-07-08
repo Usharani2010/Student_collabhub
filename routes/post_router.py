@@ -1,7 +1,7 @@
 
 from models.post import *
 from fastapi import APIRouter, HTTPException, Path, Header, File, UploadFile, Form
-from db import db  
+from db import get_database
 from typing import Dict
 from utils import decode_jwt_token
 import cloudinary
@@ -14,7 +14,7 @@ from uuid import UUID, uuid4
 
 router= APIRouter()
 
-
+db = get_database()
 
 @router.post("/create", response_model=dict)
 async def create_post(

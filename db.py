@@ -1,6 +1,11 @@
 from motor.motor_asyncio import AsyncIOMotorClient
 
-client = AsyncIOMotorClient("mongodb+srv://usharaniborigi10:uNlmL5fWkHW59QOz@projects-cluster.wxe6nyl.mongodb.net/?retryWrites=true&w=majority&appName=projects-cluster")
+client = None
+db = None
 
-db= client["student_collaboration_hub"]
-print("Connected to database:", db.name)
+def get_database():
+    global client, db
+    if client is None:
+        client = AsyncIOMotorClient("mongodb+srv://usharaniborigi10:uNlmL5fWkHW59QOz@projects-cluster.wxe6nyl.mongodb.net/?retryWrites=true&w=majority&appName=projects-cluster")
+        db = client["student_collaboration_hub"]
+    return db

@@ -1,6 +1,6 @@
 from models.users import *
 from fastapi import APIRouter, HTTPException, Path, Header
-from db import db  
+from db import get_database  
 from utils import get_hashed_password, check_password, create_jwt_token, decode_jwt_token
 from uuid import uuid4
 
@@ -9,7 +9,7 @@ from typing import Dict
 
 
 router= APIRouter()
-
+db = get_database()
 @router.post("/sign-up", response_model=dict)
 async def create_user(user: User):
     user_exists = await db.users.find_one({"email": user.email})

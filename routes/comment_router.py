@@ -1,11 +1,12 @@
 from fastapi import APIRouter, HTTPException, Path, Header
-from db import db  
+from db import get_database 
 from datetime import datetime, UTC
 from models.comments import Comment
 from utils import decode_jwt_token
 from uuid import UUID, uuid4
 
 router= APIRouter()
+db = get_database()
 
 @router.post("/create", response_model=dict)
 async def create_comment(comment: Comment, Authorization: str = Header(None)):
