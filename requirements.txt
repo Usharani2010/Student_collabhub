@@ -3,7 +3,7 @@ uvicorn
 pydantic
 motor
 bcrypt
-jwt
+PyJWT
 python-dotenv
 cloudinary
 pymongo
