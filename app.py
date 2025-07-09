@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Path
 import uvicorn
+import os
 from models.users import User
 from models.post import Post
 from routes.post_router import router as post_router
@@ -24,4 +25,5 @@ app.include_router(comment_router, prefix="/api/v1/comments", tags=["comments"])
 
 
 if __name__ == "__main__":
-    uvicorn.run("app:app", host="0.0.0.0" , port= 10000, reload=True)
+     port = int(os.environ.get("PORT", 8000))
+     uvicorn.run("app:app", host="0.0.0.0", port=port, reload=False)
