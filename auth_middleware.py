@@ -6,6 +6,9 @@ from utils import decode_jwt_token
 class AuthMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         # List of endpoints that do NOT require authentication
+        if request.method == "OPTIONS":
+            return await call_next(request)
+        
         open_endpoints = [
             "/api/v1/users/login",
             "/api/v1/users/sign-up",
