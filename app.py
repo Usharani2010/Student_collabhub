@@ -14,12 +14,20 @@ app=FastAPI(
     description="A platform for students to collaborate on projects, share resources, and connect with peers.",
     version="1.0.0",
 )
+origins = [
+    "http://localhost:5173",
+    "http://localhost",
+    "http://localhost:5174",
+    "http://localhost:3000",
+    "https://student-collaboration-hub-dk3i.onrender.com"
+]
+
 app.add_middleware(
-     CORSMiddleware,
-     allow_origins=["*"], 
-        allow_credentials=True,
-        allow_methods=["*"],  
-        allow_headers=["*"],  
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Add the authentication middleware
