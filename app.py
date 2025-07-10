@@ -7,7 +7,8 @@ from routes.post_router import router as post_router
 from routes.user_router import router as user_router
 from routes.comment_router import router as comment_router
 from db import db
-from auth_middleware import AuthMiddleware
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app=FastAPI(
     title="Student Collaboration Hub",
@@ -16,12 +17,19 @@ app=FastAPI(
 )
 
 # Add the authentication middleware
-app.add_middleware(AuthMiddleware)
+
  
 app.include_router(user_router, prefix="/api/v1/users", tags=["users"])
 app.include_router(post_router, prefix="/api/v1/posts", tags=["posts"])
 app.include_router(comment_router, prefix="/api/v1/comments", tags=["comments"])
 
+app.add_middleware(
+     CORSMiddleware,
+     allow_origins=["*"], 
+        allow_credentials=True,
+        allow_methods=["*"],  
+        allow_headers=["*"],  
+)
 
 
 if __name__ == "__main__":
