@@ -7,7 +7,7 @@ from routes.post_router import router as post_router
 from routes.user_router import router as user_router
 from routes.comment_router import router as comment_router
 from fastapi.middleware.cors import CORSMiddleware
-from middleware import AuthMiddleware
+from auth_middleware import AuthMiddleware
 
 app=FastAPI(
     title="Student Collaboration Hub",
