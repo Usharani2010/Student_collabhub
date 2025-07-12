@@ -49,7 +49,10 @@ async def create_post(
         "content": content,
         "tags": tags_list,
         "file_url": file_url,
-        "created_by": user_data.get("email"),
+        "created_by": {
+            "name": user_data.get("name"),
+            "email" : user_data.get("email")
+        },
         "created_at": datetime.utcnow()
     }
 
@@ -85,6 +88,13 @@ async def get_posts_by_user(Authorization: str = Header(None)):
 @router.get("/", response_model=dict)
 async def get_posts():
     all_posts = await db.posts.find({}, {"_id": 0}).to_list(length=100)
+    # Fetch user details for each post's created_by email
+    for post in all_posts:
+        user = await db.users.find_one({"email": post.get("created_by")}, {"_id": 0, "name": 1, "email": 1})
+        if user:
+            post["created_by"] = {"name": user.get("name"), "email": user.get("email")}
+        else:
+            post["created_by"] = {"name": None, "email": post.get("created_by")}
     return {
         "status": "success",
         "message": "Posts retrieved successfully",

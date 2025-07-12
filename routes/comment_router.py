@@ -21,7 +21,10 @@ async def create_comment(comment: Comment, Authorization: str = Header(None)):
     comment_data = comment.dict()
     comment_data["comment_id"] = uuid4().hex
     if not comment_data.get("created_by"):
-        comment_data["created_by"] = user_exists.get("email")
+        comment_data["created_by"] = {
+            "name": user_exists.get("name"),
+            "email": user_exists.get("email")
+        }
     if not comment_data.get("created_at"):
         comment_data["created_at"] = datetime.utcnow()
     result = await db.comments.insert_one(comment_data)
