@@ -7,7 +7,6 @@ KEY = "STUDENT_COLLABORATION_APP_KEY"
 def create_jwt_token(data: dict) -> str:
     payload = {
         "email": data.get("email"),
-        "name": data.get("name"),
         "exp": datetime.utcnow() + timedelta(hours=2)
     }
     token = jwt.encode(payload, KEY, algorithm="HS256")
